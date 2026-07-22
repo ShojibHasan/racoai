@@ -1,8 +1,20 @@
-# Authentication API
+# API documentation
 
-Base path: `/api/auth/`. Auth uses JWT (SimpleJWT). Send the access token as `Authorization: Bearer <token>` on protected endpoints.
+Single reference for all RacoAI backend endpoints. One section per feature area, updated as each feature lands.
 
-## Register
+Auth uses JWT (SimpleJWT). Send the access token as `Authorization: Bearer <token>` on protected endpoints.
+
+## Sections
+
+- [Authentication](#authentication) (`/api/auth/`)
+
+---
+
+## Authentication
+
+Base path: `/api/auth/`.
+
+### Register
 
 `POST /api/auth/register/` (open)
 
@@ -20,7 +32,7 @@ Response `201`:
 
 Errors: `400` if email is taken or password is under 8 characters.
 
-## Login
+### Login
 
 `POST /api/auth/login/` (open)
 
@@ -38,7 +50,7 @@ Response `200`:
 
 Access token lives 30 minutes, refresh token 1 day.
 
-## Refresh
+### Refresh
 
 `POST /api/auth/refresh/` (open)
 
@@ -54,7 +66,7 @@ Response `200`:
 { "access": "<jwt>" }
 ```
 
-## Current user
+### Current user
 
 `GET /api/auth/me/` (requires auth)
 
