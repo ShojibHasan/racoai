@@ -10,7 +10,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Load .env from the backend root if present
 load_dotenv(BASE_DIR / ".env")
 
-SECRET_KEY = os.environ.get("SECRET_KEY", "dev-insecure-key-change-me")
+SECRET_KEY = os.environ.get("SECRET_KEY", "dev-insecure-key-change-me-0123456789abcdef")
 
 DEBUG = os.environ.get("DEBUG", "true").lower() == "true"
 
@@ -96,6 +96,8 @@ USE_TZ = True
 STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+AUTH_USER_MODEL = "accounts.User"
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
