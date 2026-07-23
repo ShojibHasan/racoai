@@ -7,7 +7,6 @@ TREE_TTL = 3600
 
 
 def category_tree():
-    # Adjacency map {parent_id: [child_ids]}, cached to avoid repeat queries
     tree = cache.get(TREE_CACHE_KEY)
     if tree is not None:
         return tree
@@ -23,7 +22,6 @@ def clear_tree_cache():
 
 
 def descendant_category_ids(category_id):
-    # Iterative DFS so a deep tree cannot blow the recursion limit
     tree = category_tree()
     seen = set()
     stack = [category_id]
@@ -41,7 +39,6 @@ def descendant_category_ids(category_id):
 def recommend(product, limit=10):
     if product.category_id is None:
         return Product.objects.none()
-    # Start from the parent branch so siblings and cousins count as related
     category = product.category
     start = category.parent_id or category.id
     category_ids = descendant_category_ids(start)

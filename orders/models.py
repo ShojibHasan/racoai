@@ -46,7 +46,6 @@ class OrderItem(UUIDModel):
     subtotal = models.DecimalField(max_digits=12, decimal_places=2)
 
     def save(self, *args, **kwargs):
-        # Subtotal is always derived, never trusted from input
         self.subtotal = self.price * self.quantity
         super().save(*args, **kwargs)
 
