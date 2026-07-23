@@ -3,8 +3,10 @@ from decimal import Decimal
 from django.conf import settings
 from django.db import models
 
+from config.models_base import UUIDModel
 
-class Order(models.Model):
+
+class Order(UUIDModel):
     PENDING = "pending"
     PAID = "paid"
     CANCELED = "canceled"
@@ -36,7 +38,7 @@ class Order(models.Model):
         return self.total_amount
 
 
-class OrderItem(models.Model):
+class OrderItem(UUIDModel):
     order = models.ForeignKey(Order, related_name="items", on_delete=models.CASCADE)
     product = models.ForeignKey("catalog.Product", related_name="order_items", on_delete=models.PROTECT)
     quantity = models.PositiveIntegerField()

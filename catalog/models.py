@@ -1,7 +1,9 @@
 from django.db import models
 
+from config.models_base import UUIDModel
 
-class Category(models.Model):
+
+class Category(UUIDModel):
     name = models.CharField(max_length=120)
     slug = models.SlugField(unique=True)
     parent = models.ForeignKey(
@@ -18,7 +20,7 @@ class Category(models.Model):
         return self.name
 
 
-class Product(models.Model):
+class Product(UUIDModel):
     ACTIVE = "active"
     INACTIVE = "inactive"
     STATUS_CHOICES = [(ACTIVE, "Active"), (INACTIVE, "Inactive")]
