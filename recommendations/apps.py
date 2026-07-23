@@ -6,4 +6,4 @@ class RecommendationsConfig(AppConfig):
     name = "recommendations"
 
     def ready(self):
-        from . import signals  # noqa: F401
+        from . import signals

@@ -1,3 +1,5 @@
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
@@ -12,11 +14,13 @@ from .services import settle_payment, start_payment
 
 class PaymentViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     serializer_class = PaymentSerializer
+    queryset = Payment.objects.none()
 
     def get_queryset(self):
         # A user only sees payments for their own orders
         return Payment.objects.filter(order__user=self.request.user).select_related("order")
 
+    @extend_schema(request=InitiateSerializer, responses=OpenApiTypes.OBJECT)
     @action(detail=False, methods=["post"])
     def initiate(self, request):
         serializer = InitiateSerializer(data=request.data, context={"request": request})
@@ -34,6 +38,7 @@ class StripeWebhookView(APIView):
     authentication_classes = []
     permission_classes = [AllowAny]
 
+    @extend_schema(request=OpenApiTypes.OBJECT, responses=OpenApiTypes.OBJECT)
     def post(self, request):
         payload = {
             "body": request.body,
@@ -48,6 +53,7 @@ class BkashWebhookView(APIView):
     authentication_classes = []
     permission_classes = [AllowAny]
 
+    @extend_schema(request=OpenApiTypes.OBJECT, responses=OpenApiTypes.OBJECT)
     def post(self, request):
         payment_id = request.data.get("payment_id")
         if not payment_id:

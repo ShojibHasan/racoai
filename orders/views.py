@@ -11,8 +11,9 @@ class OrderViewSet(
     mixins.RetrieveModelMixin,
     viewsets.GenericViewSet,
 ):
+    queryset = Order.objects.none()
+
     def get_queryset(self):
-        # A user only ever sees their own orders
         return Order.objects.filter(user=self.request.user).prefetch_related("items")
 
     def get_serializer_class(self):

@@ -11,7 +11,6 @@ from .services import descendant_category_ids, recommend
 class RecommendationServiceTests(TestCase):
     def setUp(self):
         cache.clear()
-        # electronics -> phones -> android, and electronics -> laptops
         self.electronics = Category.objects.create(name="Electronics", slug="electronics")
         self.phones = Category.objects.create(name="Phones", slug="phones", parent=self.electronics)
         self.android = Category.objects.create(name="Android", slug="android", parent=self.phones)
