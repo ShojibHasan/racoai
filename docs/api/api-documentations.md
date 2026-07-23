@@ -11,6 +11,7 @@ Auth uses JWT (SimpleJWT). Send the access token as `Authorization: Bearer <toke
 - [Categories](#categories) (`/api/categories/`)
 - [Orders](#orders) (`/api/orders/`)
 - [Payments](#payments) (`/api/payments/`)
+- [Recommendations](#recommendations) (`/api/recommendations/`)
 
 ---
 
@@ -243,3 +244,17 @@ Executes and queries the bKash payment, then settles it the same way. Returns `{
 `GET /api/payments/` and `GET /api/payments/{id}/` (requires auth)
 
 Return the caller's own payments (payments on their orders). This is how a user views their payments.
+
+---
+
+## Recommendations
+
+Base path: `/api/recommendations/`. Related products found by walking the category tree with DFS. The tree is cached (Redis when configured) so repeated calls do not re-query.
+
+### For a product
+
+`GET /api/recommendations/{product_id}/` (open)
+
+Returns active products related to the given product: everything in the product's category branch (its parent's subtree, or its own subtree if it is a root category), excluding the product itself.
+
+Response `200`: array of product objects (same shape as the product detail). Empty array if the product has no category.

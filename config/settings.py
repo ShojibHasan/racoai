@@ -81,6 +81,13 @@ def _database_config():
 
 DATABASES = {"default": _database_config()}
 
+# Redis when REDIS_URL is set, local memory otherwise so dev runs without Redis
+_redis_url = os.environ.get("REDIS_URL")
+if _redis_url:
+    CACHES = {"default": {"BACKEND": "django.core.cache.backends.redis.RedisCache", "LOCATION": _redis_url}}
+else:
+    CACHES = {"default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"}}
+
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
