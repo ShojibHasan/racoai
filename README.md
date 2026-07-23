@@ -43,7 +43,6 @@ The API is at `http://127.0.0.1:8000/api/`. Admin is at `/admin/` (default seede
 ## Run with Docker
 
 ```bash
-cd backend_racoai
 docker compose up --build
 ```
 
