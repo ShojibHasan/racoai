@@ -10,6 +10,7 @@ Auth uses JWT (SimpleJWT). Send the access token as `Authorization: Bearer <toke
 - [Products](#products) (`/api/products/`)
 - [Categories](#categories) (`/api/categories/`)
 - [Orders](#orders) (`/api/orders/`)
+- [Payments](#payments) (`/api/payments/`)
 
 ---
 
@@ -193,3 +194,52 @@ Returns the caller's own orders, newest first.
 `GET /api/orders/{id}/` (requires auth)
 
 Returns one of the caller's orders. Requesting another user's order returns `404`.
+
+---
+
+## Payments
+
+Base path: `/api/payments/`. A payment belongs to an order. Providers (Stripe, bKash) sit behind a strategy pattern, so a new provider adds a class and a registry entry without changing order logic.
+
+### Initiate
+
+`POST /api/payments/initiate/` (requires auth)
+
+```json
+{ "order": 5, "provider": "stripe" }
+```
+
+Creates a pending payment and starts it with the provider. Response `201`:
+
+```json
+{
+  "payment": { "id": 1, "order": 5, "provider": "stripe",
+               "transaction_id": "pi_123", "status": "pending",
+               "created_at": "...", "updated_at": "..." },
+  "client_data": { "client_secret": "pi_123_secret_..." }
+}
+```
+
+For bKash, `client_data` carries `bkash_url` and `payment_id`. Errors `400`: order not pending, or the order does not belong to the caller.
+
+### Stripe webhook
+
+`POST /api/payments/webhook/stripe/` (open, called by Stripe)
+
+Verifies the `Stripe-Signature` header against `STRIPE_WEBHOOK_SECRET`. On `payment_intent.succeeded` the order is marked paid and stock reduced; other outcomes fail the payment and cancel the order. Returns `{ "received": true }`.
+
+### bKash webhook
+
+`POST /api/payments/webhook/bkash/` (open, called after checkout)
+
+```json
+{ "payment_id": "TR0011..." }
+```
+
+Executes and queries the bKash payment, then settles it the same way. Returns `{ "received": true }`.
+
+### List / detail
+
+`GET /api/payments/` and `GET /api/payments/{id}/` (requires auth)
+
+Return the caller's own payments (payments on their orders). This is how a user views their payments.
