@@ -4,6 +4,8 @@ Single reference for all RacoAI backend endpoints. One section per feature area,
 
 Auth uses JWT (SimpleJWT). Send the access token as `Authorization: Bearer <token>` on protected endpoints.
 
+Every `id` and foreign key is a UUID string (for example `2f1e5bc9-4b61-4aca-aff4-0fc7e34eaa85`), not an integer. The numbers in the examples below are placeholders for readability.
+
 ## Sections
 
 - [Authentication](#authentication) (`/api/auth/`)

@@ -1,7 +1,9 @@
 from django.db import models
 
+from config.models_base import UUIDModel
 
-class Payment(models.Model):
+
+class Payment(UUIDModel):
     STRIPE = "stripe"
     BKASH = "bkash"
     PROVIDER_CHOICES = [(STRIPE, "Stripe"), (BKASH, "bKash")]
