@@ -9,6 +9,7 @@ Auth uses JWT (SimpleJWT). Send the access token as `Authorization: Bearer <toke
 - [Authentication](#authentication) (`/api/auth/`)
 - [Products](#products) (`/api/products/`)
 - [Categories](#categories) (`/api/categories/`)
+- [Orders](#orders) (`/api/orders/`)
 
 ---
 
@@ -151,3 +152,44 @@ Returns root categories with children nested recursively.
 ### Update / Delete
 
 `PUT/PATCH /api/categories/{id}/` and `DELETE /api/categories/{id}/` (staff only). Deleting a category cascades to its children.
+
+---
+
+## Orders
+
+Base path: `/api/orders/`. All endpoints require authentication. A user only sees their own orders. Prices, subtotals, and the order total are computed server-side from the product; the client never sends them.
+
+### Create
+
+`POST /api/orders/` (requires auth)
+
+```json
+{ "items": [ { "product": 1, "quantity": 3 }, { "product": 2, "quantity": 2 } ] }
+```
+
+Response `201`:
+
+```json
+{
+  "id": 5, "user": 4, "total_amount": "35.00", "status": "pending",
+  "items": [
+    { "id": 9, "product": 1, "quantity": 3, "price": "10.00", "subtotal": "30.00" },
+    { "id": 10, "product": 2, "quantity": 2, "price": "2.50", "subtotal": "5.00" }
+  ],
+  "created_at": "2026-07-22T00:00:00Z", "updated_at": "2026-07-22T00:00:00Z"
+}
+```
+
+Validation errors return `400`: empty items, quantity below 1, an inactive product, or quantity above current stock.
+
+### List
+
+`GET /api/orders/` (requires auth)
+
+Returns the caller's own orders, newest first.
+
+### Detail
+
+`GET /api/orders/{id}/` (requires auth)
+
+Returns one of the caller's orders. Requesting another user's order returns `404`.
